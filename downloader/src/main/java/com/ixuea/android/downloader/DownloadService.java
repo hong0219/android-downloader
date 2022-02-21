@@ -85,7 +85,7 @@ public class DownloadService extends Service {
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             manager.createNotificationChannel(serviceChannel);
-            Notification notification = new NotificationCompat.Builder(this,Channel_id).setContentTitle("").setContentText("").build();
+            Notification notification = new NotificationCompat.Builder(this,Channel_id).setContentTitle("").setContentText("").setAutoCancel(true).build();
             startForeground(1,notification);
         }
     }
