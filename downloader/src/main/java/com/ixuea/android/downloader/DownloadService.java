@@ -2,9 +2,11 @@ package com.ixuea.android.downloader;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 
 import com.ixuea.android.downloader.callback.DownloadManager;
@@ -28,7 +30,11 @@ public class DownloadService extends Service {
     public static DownloadManager getDownloadManager(Context context, Config config) {
         if (!isServiceRunning(context)) {
             Intent downloadSvr = new Intent(context, DownloadService.class);
-            context.startService(downloadSvr);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(downloadSvr);
+            } else {
+                context.startService(downloadSvr);
+            }
         }
         if (DownloadService.downloadManager == null) {
             DownloadService.downloadManager = DownloadManagerImpl.getInstance(context, config);
@@ -63,10 +69,21 @@ public class DownloadService extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(1,new Notification());
+        }
+    }
+
+    @Override
     public void onDestroy() {
         if (downloadManager != null) {
             downloadManager.destroy();
             downloadManager = null;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true);
         }
         super.onDestroy();
     }
