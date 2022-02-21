@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 
+import androidx.core.app.NotificationCompat;
+
 import com.ixuea.android.downloader.callback.DownloadManager;
 import com.ixuea.android.downloader.config.Config;
 
