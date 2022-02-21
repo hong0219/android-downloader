@@ -3,6 +3,8 @@ package com.ixuea.android.downloader;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +74,17 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForeground(1,new Notification());
+            String Channel_id = "DOWNLOAD_SERVICE";
+            String Channel_name = "DOWNLOAD_CHANNEL";
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    Channel_id,
+                    Channel_name,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            manager.createNotificationChannel(serviceChannel);
+            Notification notification = new NotificationCompat.Builder(this,Channel_id).setContentTitle("").setContentText("").build();
+            startForeground(1,notification);
         }
     }
 
