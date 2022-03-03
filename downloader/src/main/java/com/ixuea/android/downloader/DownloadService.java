@@ -35,7 +35,7 @@ public class DownloadService extends Service {
         if (!isServiceRunning(context)) {
             Intent downloadSvr = new Intent(context, DownloadService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(downloadSvr);
+                //context.startForegroundService(downloadSvr);
             } else {
                 context.startService(downloadSvr);
             }
@@ -72,34 +72,36 @@ public class DownloadService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String Channel_id = "DOWNLOAD_SERVICE";
-            String Channel_name = "DOWNLOAD_CHANNEL";
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    Channel_id,
-                    Channel_name,
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            manager.createNotificationChannel(serviceChannel);
-            Notification notification = new NotificationCompat.Builder(this,Channel_id).setContentTitle("").setContentText("").setPriority(NotificationCompat.PRIORITY_LOW).setAutoCancel(true).setDefaults(0).build();
-            startForeground(1,notification);
-            stopForeground(true);            
-        }
-    }
+//onCreate Error!  An error occurs when the application ends during download ( code -> startForeground(1,notification); )
+//Logcat : Unable to create service com.ixuea.android.downloader.DownloadService: android.app.ForegroundServiceStartNotAllowedException: Service.startForeground() not allowed due to mAllowStartForeground false
+//    @Override
+//    public void onCreate() {
+//        super.onCreate();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            String Channel_id = "DOWNLOAD_SERVICE";
+//            String Channel_name = "DOWNLOAD_CHANNEL";
+//            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            NotificationChannel serviceChannel = new NotificationChannel(
+//                    Channel_id,
+//                    Channel_name,
+//                    NotificationManager.IMPORTANCE_DEFAULT
+//            );
+//            manager.createNotificationChannel(serviceChannel);
+//            Notification notification = new NotificationCompat.Builder(this,Channel_id).setContentTitle("").setContentText("").setPriority(NotificationCompat.PRIORITY_LOW).setAutoCancel(true).setDefaults(0).build();
+//            startForeground(1,notification); //An error occurs when the application ends during download
+//            stopForeground(true);            
+//        }
+//    }
 
     @Override
     public void onDestroy() {
         if (downloadManager != null) {
             downloadManager.destroy();
             downloadManager = null;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            stopForeground(true);
-        }
+        }        
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            stopForeground(true);
+//        }
         super.onDestroy();
     }
 }
